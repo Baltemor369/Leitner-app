@@ -5,6 +5,30 @@ Toutes les modifications notables de ce projet sont consignées dans ce fichier.
 Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et le projet suit le [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [0.3.0] - 2026-06-21
+
+### Ajouté
+- Interface de gestion (Riverpod) : écran d'accueil listant les paquets avec
+  compteurs (total + cartes dues), création/renommage/suppression de paquets,
+  et écran de cartes par paquet avec création/édition/suppression (EF-1 à EF-6).
+- Éditeur de carte (recto/verso texte) avec validation « au moins une face ».
+- Thème clair/sombre suivant le système (EF-21).
+- Helper UI partagé : dialogue de confirmation et exécution protégée des
+  opérations asynchrones (SnackBar en cas d'erreur).
+- Widget-tests du parcours (création de paquet, ajout de carte, confirmation de
+  suppression) ; suite complète 29/29 au vert.
+
+### Corrigé (revue avant commit)
+- Suppression de carte désormais **confirmée** (EF-6).
+- Mutations asynchrones protégées (plus d'exception non gérée) avec garde
+  `context.mounted` après chaque `await`.
+- `TextEditingController` du dialogue de nom correctement libéré (plus de fuite).
+- Troncature (ellipsis) des titres pour éviter les débordements de mise en page.
+
+### Connu
+- L'éditeur de carte ne gère pas encore les images (prévu avec la couche
+  d'import d'images, J2.5) ; la base de données les supporte déjà.
+
 ## [0.2.0] - 2026-06-21
 
 ### Ajouté
