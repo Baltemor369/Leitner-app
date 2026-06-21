@@ -5,6 +5,32 @@ Toutes les modifications notables de ce projet sont consignées dans ce fichier.
 Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et le projet suit le [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [0.2.0] - 2026-06-21
+
+### Ajouté
+- Couche de données locale SQLite via **drift** : tables `Decks`, `Cards`
+  (texte et/ou image par face), `ReviewLogs`, avec suppression en cascade.
+- Dépôts d'accès : `DeckRepository` (CRUD + comptes total/dues),
+  `CardRepository` (création, édition partielle non destructrice, suppression,
+  cartes dues) et `ReviewRepository` (application de Leitner en transaction +
+  journalisation), couverts par 20 tests d'intégration (base en mémoire).
+- Utilitaires de dates partagés (`core/util/dates.dart`).
+
+### Modifié
+- `next_review_date` stocké en **date pure ISO « yyyy-MM-dd »** (et non en
+  instant), rendant la logique « due » insensible au fuseau horaire et au DST.
+- Le moteur Leitner réutilise désormais les utilitaires de dates partagés.
+
+### Sécurité
+- Validation des chemins d'images (rejet des chemins vides ou contenant `..`).
+- `updateCardContent` et `deleteDeck`/`deleteCard` renvoient les fichiers image
+  à effacer (prévention des orphelins, EF-6c).
+
+### Connu / accepté pour le MVP
+- Base non chiffrée au repos (sandbox OS jugé suffisant pour des données
+  d'apprentissage locales). Chiffrement (SQLCipher) envisagé post-MVP.
+- Invariant `box ∈ 1..5` garanti par le moteur, pas par une contrainte SQL.
+
 ## [0.1.0] - 2026-06-20
 
 ### Ajouté

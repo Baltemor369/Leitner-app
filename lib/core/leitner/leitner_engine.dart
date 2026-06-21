@@ -4,6 +4,8 @@
 /// unitaires exhaustifs (cf. §7.2 du cahier des charges).
 library;
 
+import '../util/dates.dart';
+
 /// Nombre de boîtes du système de Leitner (cf. EF-7).
 const int kBoxCount = 5;
 
@@ -50,9 +52,9 @@ ReviewOutcome applyReview({
     throw RangeError.range(currentBox, 1, kBoxCount, 'currentBox');
   }
 
-  final reference = _dateOnly(today ?? DateTime.now());
+  final reference = dateOnly(today ?? DateTime.now());
   final newBox = wasCorrect ? (currentBox + 1).clamp(1, kBoxCount) : 1;
-  final nextReviewDate = _addDays(reference, boxIntervalDays[newBox]!);
+  final nextReviewDate = addDays(reference, boxIntervalDays[newBox]!);
 
   return ReviewOutcome(newBox: newBox, nextReviewDate: nextReviewDate);
 }
@@ -60,19 +62,7 @@ ReviewOutcome applyReview({
 /// Indique si une carte est « due » : sa prochaine révision est aujourd'hui ou
 /// dans le passé (cf. EF-8).
 bool isDue({required DateTime nextReviewDate, DateTime? today}) {
-  final reference = _dateOnly(today ?? DateTime.now());
-  final due = _dateOnly(nextReviewDate);
+  final reference = dateOnly(today ?? DateTime.now());
+  final due = dateOnly(nextReviewDate);
   return !due.isAfter(reference);
 }
-
-/// Normalise une date à minuit (ignore l'heure) pour des comparaisons fiables.
-DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
-
-/// Ajoute [days] jours **calendaires** à [date].
-///
-/// On passe par le constructeur `DateTime` (qui normalise un jour qui déborde
-/// du mois) plutôt que par `Duration(days:)`, afin d'être insensible aux
-/// changements d'heure (DST) : `Duration` ajoute une durée absolue de 24 h,
-/// ce qui peut décaler la date d'un jour lors des transitions horaires.
-DateTime _addDays(DateTime date, int days) =>
-    DateTime(date.year, date.month, date.day + days);
